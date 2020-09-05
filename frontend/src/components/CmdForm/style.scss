@@ -1,0 +1,21 @@
+.cmd {
+  &__form {
+  }
+  &__input-group {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  &__label {
+      color: #79baa4;
+      margin-right: 10px;
+  }
+  &__input {
+    outline: none;
+    border-bottom: 2px solid #fff;
+    background-color: transparent;
+    padding: 5px;
+    width: 60%;
+    color: white;
+  }
+}

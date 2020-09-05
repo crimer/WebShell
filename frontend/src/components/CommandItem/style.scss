@@ -1,0 +1,13 @@
+.cmd-item {
+  margin-bottom: 20px;
+  &__label {
+    color: #79baa4;
+    margin-right: 10px;
+    span {
+      color: white;
+    }
+  }
+  &__text{
+    color: white;
+  }
+}
