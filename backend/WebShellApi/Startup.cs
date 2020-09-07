@@ -59,7 +59,12 @@ namespace WebShellApi
 
             app.UseRouting();
 
-            app.UseCors(p => p.AllowAnyOrigin());  // подключил CORS
+            app.UseCors(p =>
+            {
+                p.AllowAnyOrigin();
+                p.AllowAnyHeader();
+                p.AllowAnyMethod();
+            });  // подключил CORS
 
             app.UseAuthorization();
 

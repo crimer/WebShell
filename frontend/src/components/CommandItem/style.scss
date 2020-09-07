@@ -1,13 +1,18 @@
 .cmd-item {
   margin-bottom: 20px;
+  &__info{
+    display: flex;
+  }
   &__label {
     color: #79baa4;
     margin-right: 10px;
-    span {
-      color: white;
-    }
+
+  }
+  &__command{
+    color: #FF8000;
   }
   &__text{
     color: white;
+    white-space: pre-wrap;
   }
 }

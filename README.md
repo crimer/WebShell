@@ -12,8 +12,9 @@ Backend:
 
 ## Запуск
 Frontend:
-1. Установка необходимых зависимотей - `yarn`
-2. Запуск в режиме development - `yarn start`
-2. Запуск в режиме production - `yarn build`
+1. Перейти в папку frontend
+2. Установить зависимоти - `yarn`
+3. Запуск в режиме development - `yarn start`
+4. Запуск в режиме production - `yarn build`
 
 Backend:

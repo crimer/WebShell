@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './style.scss';
+import { sendRequest } from '../../utils/api';
 
 export const CmdForm = () => {
   const [command, setCommand] = useState('');
@@ -12,7 +13,17 @@ export const CmdForm = () => {
     console.log(command);
 
     setCommand('');
+    sendRequest(
+      'https://localhost:44341/api/commands',
+      'POST',
+      { bashCommand: command },
+      'application/json'
+    ).then((x) => console.log(x));
   };
+
+  useEffect(() => {
+    ref.current.focus();
+  }, []);
 
   return (
     <div className='cmd'>
