@@ -20,14 +20,24 @@ namespace WebShellApi.Controllers
             _commandRepository = commandRepository;
             _processService = processService;
         }
-        // GET api/commands
+        /// <summary>
+        /// GET api/commands
+        /// Get command history
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Command>>> GetAllCommands()
         {
             var allCommands = await _commandRepository.GetAllCommands();
             return Ok(allCommands);
         }
-        // POST api/commands
+
+        /// <summary>
+        /// POST api/commands
+        /// Write and execute command
+        /// </summary>
+        /// <param name="commandDto"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<Command>> WriteCommand([FromBody] CommandCreateDto commandDto)
         {

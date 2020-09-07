@@ -7,6 +7,8 @@ using WebShellApi.Models;
 using WebShellApi.Services.Interfaces;
 using WebShellApi.Services.Services;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
+using Serilog;
 
 namespace WebShellApi
 {
@@ -25,12 +27,22 @@ namespace WebShellApi
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddControllers();
             services.AddCors(); // добавил сервис CORS
+            services.AddRouting(opt => opt.LowercaseUrls = true);
             services.AddDbContext<AppDbContext>(opt =>
             {
                 opt.UseSqlServer(connectionString);
             });
             services.AddTransient<ICommandRepository, CommandRepository>();
             services.AddScoped<IProcessService, ProcessService>();
+            services.AddSwaggerGen(opt =>
+            {
+                opt.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo()
+                {
+                    Version = "v1",
+                    Title = "WebShell Commands API",
+                    Description = "WebShell Commands API documentation",
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,11 +55,21 @@ namespace WebShellApi
 
             app.UseHttpsRedirection();
 
+            app.UseSerilogRequestLogging();
+
             app.UseRouting();
 
             app.UseCors(p => p.AllowAnyOrigin());  // подключил CORS
 
             app.UseAuthorization();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(opt =>
+            {
+                opt.SwaggerEndpoint("/swagger/v1/swagger.json", "WebShell Commands API");
+            });
+        
 
             app.UseEndpoints(endpoints =>
             {
