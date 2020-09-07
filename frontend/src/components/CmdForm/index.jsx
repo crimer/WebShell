@@ -1,29 +1,31 @@
-import React, {useState} from 'react';
+import React, { useState, useRef } from 'react';
 import './style.scss';
 
 export const CmdForm = () => {
   const [command, setCommand] = useState('');
 
-  const ref = useRef('')
+  const ref = useRef('');
 
   const submitCmd = (e) => {
     e.preventDefault();
-    if (command === null || command === '' || command.trim() === '') return
+    if (command === null || command === '' || command.trim() === '') return;
     console.log(command);
 
-    setCommand('')
-  }
+    setCommand('');
+  };
+
   return (
     <div className='cmd'>
-      <form className='cmd__form' onSubmit={(e)=>submitCmd(e)}>
+      <form className='cmd__form' onSubmit={(e) => submitCmd(e)}>
         <div className='cmd__input-group'>
           <label htmlFor='commandInput' className='cmd__label'>
-            Nikita CMD:
+            Nikita command:
           </label>
           <input
             type='text'
             value={command}
-            onChange={(e) => setCommand(e.target.value.trim())}
+            ref={ref}
+            onChange={(e) => setCommand(e.target.value)}
             placeholder='Command'
             className='cmd__input'
           />

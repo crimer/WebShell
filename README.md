@@ -8,6 +8,7 @@ Backend:
 - ASP.NET Core Web API
 - MSSQL Server
 - EntityFrameworkCore
+- Serilog
 
 ## Запуск
 Frontend:
