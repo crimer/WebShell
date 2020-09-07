@@ -1,7 +1,9 @@
-﻿namespace WebShellApi.Services.Interfaces
+﻿using WebShellApi.Models.Models;
+
+namespace WebShellApi.Services.Interfaces
 {
     public interface IProcessService
     {
-        string ExecuteProcess(string command);
+        Command ExecuteProcess(string command);
     }
 }

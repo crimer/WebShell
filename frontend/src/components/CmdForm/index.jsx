@@ -2,23 +2,40 @@ import React, { useState, useRef, useEffect } from 'react';
 import './style.scss';
 import { sendRequest } from '../../utils/api';
 
-export const CmdForm = () => {
+export const CmdForm = ({ commands }) => {
   const [command, setCommand] = useState('');
-
+  const [index, setIndex] = useState(commands.length);
   const ref = useRef('');
+
+  const changeCommand = (e) => {
+    // up
+    if (e.keyCode === 38) {
+      if (index === 0) setIndex(commands.length - 1);
+      else setIndex(index - 1);
+    }
+    // down
+    if (e.keyCode === 40) {
+      if (index === commands.length) setIndex(0);
+      else setIndex(index + 1);
+    }
+  };
+
+  useEffect(() => {
+    setCommand(commands[index]);
+  }, [index]);
 
   const submitCmd = (e) => {
     e.preventDefault();
     if (command === null || command === '' || command.trim() === '') return;
     console.log(command);
 
-    setCommand('');
     sendRequest(
-      'https://localhost:44341/api/commands',
+      'api/commands',
       'POST',
       { bashCommand: command },
       'application/json'
-    ).then((x) => console.log(x));
+      ).then((x) => console.log(x));
+      setCommand('');
   };
 
   useEffect(() => {
@@ -36,6 +53,7 @@ export const CmdForm = () => {
             type='text'
             value={command}
             ref={ref}
+            onKeyDown={(e) => changeCommand(e)}
             onChange={(e) => setCommand(e.target.value)}
             placeholder='Command'
             className='cmd__input'

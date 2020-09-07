@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Diagnostics;
+using WebShellApi.Models.Helpers;
+using WebShellApi.Models.Models;
 using WebShellApi.Services.Interfaces;
 
 namespace WebShellApi.Services.Services
 {
 	public class ProcessService : IProcessService
 	{
-		public string ExecuteProcess(string command)
+		public Command ExecuteProcess(string command)
 		{
 			string result = string.Empty;
+			string error = string.Empty;
+			Command model = new Command() { BashCommand = command };
+			
 			try
 			{
-
 				Process p = new Process();
 				p.StartInfo = new ProcessStartInfo("cmd.exe")
 				{
@@ -19,7 +23,6 @@ namespace WebShellApi.Services.Services
 					RedirectStandardOutput = true,
 					RedirectStandardError = true,
 					UseShellExecute = false,
-
 				};
 
 				p.Start();
@@ -29,9 +32,14 @@ namespace WebShellApi.Services.Services
 				p.StandardInput.Close();
 
 				result = p.StandardOutput.ReadToEnd();
+				error = p.StandardError.ReadToEnd();
+				
 				p.WaitForExit();
 				
-				return result;
+				model.IsFailed = error != "" ? true : false;
+				model.Result = error != "" ? error : result;
+				
+				return model;
 			}
 			catch (Exception ex)
 			{

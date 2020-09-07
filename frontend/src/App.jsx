@@ -2,20 +2,26 @@ import React, { useEffect, useState } from 'react';
 import './App.scss';
 import { CommandsList } from './components/CommandsList';
 import { CmdForm } from './components/CmdForm';
+import { sendRequest } from './utils/api';
+import { Loader } from './components/Loader';
 
 const App = () => {
   const [history, setHistory] = useState({ error: '', allHistory: [] });
+  const [commands, setCommands] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchCommands = async () => {
       try {
         setIsLoading(true);
-        const result = await fetch('https://localhost:44341/api/commands');
-        const data = await result.json();
-        setHistory({ ...history, allHistory: data });
+        const result = await sendRequest('api/commands', 'GET');
+        if (!result.isFailed)
+          setHistory({ ...history, allHistory: result.data });
+        else {
+          setHistory({ error: result.error, allHistory: [] });
+        }
       } catch (error) {
-        setHistory({ error, allHistory: [] });
+        setHistory({ error: error, ...history });
       } finally {
         setIsLoading(false);
       }
@@ -23,19 +29,24 @@ const App = () => {
     fetchCommands();
   }, []);
 
+  useEffect(() => {
+    let mass = history.allHistory.map((item) => item.bashCommand);
+    setCommands(mass);
+  }, [history]);
+
   return (
     <div className='container'>
       <header className='header'>Web Shell - Shevchenko Nikita</header>
       <div className='page'>
-        {isLoading && <p>Loading ...</p>}
         {history.error && <p>Error: {history.error}</p>}
+        {isLoading && <Loader/>}
         {history.allHistory.length > 0 ? (
           <CommandsList history={history.allHistory} />
         ) : (
           <p>История комманд чиста</p>
         )}
 
-        <CmdForm />
+        <CmdForm commands={commands} />
       </div>
     </div>
   );

@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using WebShellApi.Dtos;
+using WebShellApi.Helpers;
 using WebShellApi.Models.Models;
 using WebShellApi.Services.Interfaces;
 
@@ -14,8 +15,7 @@ namespace WebShellApi.Controllers
     {
         private readonly ICommandRepository _commandRepository;
         private readonly IProcessService _processService;
-
-        public CommandController(ICommandRepository commandRepository,IProcessService processService)
+        public CommandController(ICommandRepository commandRepository, IProcessService processService)
         {
             _commandRepository = commandRepository;
             _processService = processService;
@@ -28,8 +28,11 @@ namespace WebShellApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Command>>> GetAllCommands()
         {
-            var allCommands = await _commandRepository.GetAllCommands();
-            return Ok(allCommands);
+            IEnumerable<Command> allCommands = await _commandRepository.GetAllCommands();
+            var apiResponse = new ApiResponse<IEnumerable<Command>>(allCommands);
+            apiResponse.Error = "";
+            apiResponse.IsFailed = false;
+            return Ok(apiResponse);
         }
 
         /// <summary>
@@ -39,16 +42,20 @@ namespace WebShellApi.Controllers
         /// <param name="commandDto"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<Command>> WriteCommand([FromBody] CommandCreateDto commandDto)
+        public async Task<ActionResult<ApiResponse<Command>>> WriteCommand([FromBody] CommandCreateDto commandDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             if (commandDto == null) return NotFound();
 
-            var res = _processService.ExecuteProcess(commandDto.BashCommand);
-            Command model = new Command { BashCommand = commandDto.BashCommand, Result = res,IsFailed = false };
-            var command = await _commandRepository.WriteCommand(model);
+            var model = _processService.ExecuteProcess(commandDto.BashCommand);
 
-            return Ok(command);
+            Command command = await _commandRepository.WriteCommand(model);
+
+            var apiResponse = new ApiResponse<Command>(command);
+            apiResponse.IsFailed = command.IsFailed;
+            apiResponse.Error = command.IsFailed ? command.Result : "";
+
+            return Ok(apiResponse);
         }
     }
 }

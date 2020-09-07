@@ -1,17 +1,19 @@
 export const sendRequest = async (
   url,
   method = 'GET',
-  data = {},
+  data = null,
   contentType = ''
 ) => {
-  console.log(url, method, data, contentType);
-  const response = await fetch(url, {
+  const uri = `https://localhost:5001/${url}`
+  const response = await fetch(uri, {
     method: method,
     headers: buildHeaders(contentType),
-    body: JSON.stringify(data),
+    body: data !== null ? JSON.stringify(data) : null,
   });
+  const content = await response.json();
+  console.log(`Request: ${method} ${uri} ${data} ${contentType}`);
 
-  return await response.json();
+  return content;
 };
 
 const buildHeaders = (contentType) => {
