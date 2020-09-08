@@ -23,7 +23,7 @@ export const CommandItem = ({ command }) => {
       <li className='cmd-item'>
         <div className='cmd-item__info'>
           <span className='cmd-item__label'>
-            {dateFormat(command.dateTime)} Nikita command:
+            {dateFormat(command.dateTime)} Nikita:
           </span>
           <span className='cmd-item__command'>{command.bashCommand}</span>
         </div>

@@ -5,6 +5,7 @@ import { CommandItem } from '../CommandItem';
 export const CommandsList = (prop) => {
   const historyList = useRef(null);
 
+  // Авто скролл в самый низ
   useEffect(() => {
     historyList.current.scrollIntoView({
       behavior: 'smooth',

@@ -4,7 +4,7 @@ export const sendRequest = async (
   data = null,
   contentType = ''
 ) => {
-  const uri = `https://localhost:5001/${url}`
+  const uri = `https://localhost:44341/${url}`
   const response = await fetch(uri, {
     method: method,
     headers: buildHeaders(contentType),

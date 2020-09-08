@@ -2,11 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import './style.scss';
 import { sendRequest } from '../../utils/api';
 
-export const CmdForm = ({ commands }) => {
+export const CmdForm = ({ commands, addCommand }) => {
   const [command, setCommand] = useState('');
   const [index, setIndex] = useState(commands.length);
   const ref = useRef('');
 
+  // Переключение между историей команд через стрелочки
   const changeCommand = (e) => {
     // up
     if (e.keyCode === 38) {
@@ -24,20 +25,19 @@ export const CmdForm = ({ commands }) => {
     setCommand(commands[index]);
   }, [index]);
 
+  // Отправка команды
   const submitCmd = (e) => {
     e.preventDefault();
     if (command === null || command === '' || command.trim() === '') return;
     console.log(command);
 
-    sendRequest(
-      'api/commands',
-      'POST',
-      { bashCommand: command },
-      'application/json'
-      ).then((x) => console.log(x));
-      setCommand('');
+    sendRequest('api/commands', 'POST', { bashCommand: command }, 'application/json')
+      .then((res) => addCommand(res.data));
+
+    setCommand('');
   };
 
+  // Авто фокус input
   useEffect(() => {
     ref.current.focus();
   }, []);

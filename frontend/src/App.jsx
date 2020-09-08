@@ -10,6 +10,7 @@ const App = () => {
   const [commands, setCommands] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Подгрузка истории комманд
   useEffect(() => {
     const fetchCommands = async () => {
       try {
@@ -29,24 +30,28 @@ const App = () => {
     fetchCommands();
   }, []);
 
+  // Сбор только комманд после каждого изменения истории
   useEffect(() => {
     let mass = history.allHistory.map((item) => item.bashCommand);
     setCommands(mass);
   }, [history]);
 
+  const addCommand = (command) => {
+    setHistory({ ...history, allHistory: [...history.allHistory, command] });
+  };
   return (
     <div className='container'>
       <header className='header'>Web Shell - Shevchenko Nikita</header>
       <div className='page'>
         {history.error && <p>Error: {history.error}</p>}
-        {isLoading && <Loader/>}
+        {isLoading && <Loader />}
         {history.allHistory.length > 0 ? (
           <CommandsList history={history.allHistory} />
         ) : (
           <p>История комманд чиста</p>
         )}
 
-        <CmdForm commands={commands} />
+        <CmdForm commands={commands} addCommand={addCommand} />
       </div>
     </div>
   );
